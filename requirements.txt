@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+torch
+transformers
+sacrebleu
+requests
+pytest
+gitpython
+
+
