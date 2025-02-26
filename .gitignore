@@ -2,3 +2,5 @@
 /logs/ai_logs.log
 /data/
 /models/
+.idea/
+/src/__pycache__/

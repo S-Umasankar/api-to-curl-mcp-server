@@ -1,12 +1,16 @@
 from fastapi import FastAPI
 import subprocess
+import logging
 import torch
 from transformers import T5ForConditionalGeneration, T5Tokenizer
+
+# Configure logging
+logging.basicConfig(filename="logs/ai_logs.log", level=logging.INFO)
 
 app = FastAPI()
 
 # Load Model & Tokenizer (If already trained)
-model_path = "t5_api_to_curl"
+model_path = "models/t5_api_to_curl"
 try:
     model = T5ForConditionalGeneration.from_pretrained(model_path)
     tokenizer = T5Tokenizer.from_pretrained(model_path)
@@ -46,13 +50,7 @@ async def auto_finetune():
 # Endpoint for inference (Convert API Docs to cURL)
 @app.post("/generate_curl/")
 async def generate_curl(api_text: str):
-    if model is None or tokenizer is None:
-        return {"error": "Model not loaded"}
-
-    input_tokens = tokenizer(api_text, return_tensors="pt", padding=True, truncation=True, max_length=512)
-    output_ids = model.generate(input_tokens["input_ids"])
-    generated_curl = tokenizer.decode(output_ids[0], skip_special_tokens=True)
-
-    return {"curl_command": generated_curl}
+    subprocess.run(["python", "src/deploy_model.py"])
+    return {"status": "Generation Started"}
 
 # Run the server using `uvicorn mcp_server:app --reload`
