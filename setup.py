@@ -14,7 +14,7 @@ setup(
         "pytest",
         "gitpython",
     ],
-    author="Your Name",
+    author="Umasankar Srinivasan",
     description="MCP SDK for API-to-cURL Model Automation",
-    license="MIT"
+    license=""
 )

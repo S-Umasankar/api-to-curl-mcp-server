@@ -1,16 +1,14 @@
 import time
 import requests
 import subprocess
-import os
-import json
 from git import Repo
 
 # MCP Server URL
 MCP_SERVER_URL = "http://127.0.0.1:8000"
 
 # GitHub Repo Info
-GITHUB_REPO_PATH = "/path/to/your/local/repo"
-GITHUB_REMOTE_URL = "https://github.com/yourusername/your-repo.git"
+GITHUB_REPO_PATH = "/Users/umasankars/PycharmProjects/CapstoneMCPserver/"
+GITHUB_REMOTE_URL = "https://github.com/S-Umasankar/api-to-curl-mcp-server.git"
 
 
 def call_api(endpoint):
@@ -34,7 +32,7 @@ model = T5ForConditionalGeneration.from_pretrained("t5-large")
 optimizer = AdamW(model.parameters(), lr=3e-5)
 # Model training code improved with dynamic learning rate...
 """
-    with open("train_model.py", "w") as f:
+    with open("src/train_model.py", "w") as f:
         f.write(new_code)
 
     print("✅ New code generated and saved.")

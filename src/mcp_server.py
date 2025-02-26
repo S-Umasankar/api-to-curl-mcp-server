@@ -18,28 +18,28 @@ except:
 # Endpoint to generate dataset
 @app.get("/generate_dataset/")
 async def generate_dataset():
-    subprocess.run(["python", "generate_dataset.py"])
+    subprocess.run(["python", "src/generate_dataset.py"])
     return {"status": "Dataset Generated"}
 
 
 # Endpoint to preprocess dataset
 @app.get("/preprocess_data/")
 async def preprocess_data():
-    subprocess.run(["python", "preprocess_data.py"])
+    subprocess.run(["python", "src/preprocess_data.py"])
     return {"status": "Dataset Preprocessed"}
 
 
 # Endpoint to train model
 @app.get("/train_model/")
 async def train_model():
-    subprocess.run(["python", "train_model.py"])
+    subprocess.run(["python", "src/train_model.py"])
     return {"status": "Model Training Started"}
 
 
 # Endpoint to fine-tune model
 @app.get("/auto_finetune/")
 async def auto_finetune():
-    subprocess.run(["python", "finetune_model.py"])
+    subprocess.run(["python", "src/finetune_model.py"])
     return {"status": "Auto Fine-Tuning Started"}
 
 
