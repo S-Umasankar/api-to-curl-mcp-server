@@ -10,7 +10,7 @@ model = T5ForConditionalGeneration.from_pretrained(model_path)
 optimizer = AdamW(model.parameters(), lr=3e-5)
 
 # Load preprocessed dataset
-dataset = torch.load("data/preprocessed_api_to_curl.pt")
+dataset = torch.load("data/input/preprocessed_api_to_curl.pt")
 train_loader = torch.utils.data.DataLoader(dataset, batch_size=8, shuffle=True)
 
 # Fine-tuning loop

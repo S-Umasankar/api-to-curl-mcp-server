@@ -39,6 +39,17 @@ async def train_model():
     subprocess.run(["python", "src/train_model.py"])
     return {"status": "Model Training Started"}
 
+# Testing the model
+@app.get("/test_training/")
+async def test_model():
+    subprocess.run(["python", "tests/test_training.py"])
+    return {"status": "Model Testing Started"}
+
+# Testing the inference
+@app.get("/test_inference/")
+async def test_inference():
+    subprocess.run(["python", "tests/test_inference.py"])
+    return {"status": "Inference Testing Started"}
 
 # Endpoint to fine-tune model
 @app.get("/auto_finetune/")
@@ -46,11 +57,18 @@ async def auto_finetune():
     subprocess.run(["python", "src/finetune_model.py"])
     return {"status": "Auto Fine-Tuning Started"}
 
-
-# Endpoint for inference (Convert API Docs to cURL)
 @app.post("/generate_curl/")
 async def generate_curl(api_text: str):
-    subprocess.run(["python", "src/deploy_model.py"])
-    return {"status": "Generation Started"}
+    try:
+        # Run generate_curl.py and capture the output
+        result = subprocess.run(
+            ["python", "src/generate_curl.py", api_text],  # Pass input as argument
+            capture_output=True, text=True, check=True
+        )
+
+        return {"curl_command": result.stdout.strip()}  # Return generated cURL
+
+    except subprocess.CalledProcessError as e:
+        return {"error": f"Failed to generate cURL: {e.stderr}"}
 
 # Run the server using `uvicorn mcp_server:app --reload`

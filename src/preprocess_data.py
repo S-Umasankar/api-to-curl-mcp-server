@@ -4,7 +4,7 @@ from transformers import T5Tokenizer
 
 tokenizer = T5Tokenizer.from_pretrained("t5-small")
 
-dataset = json.load(open("api_to_curl_dataset.json", "r"))
+dataset = json.load(open("data/input/api_to_curl_dataset.json", "r"))
 
 processed_data = [
     {
@@ -14,5 +14,5 @@ processed_data = [
     for entry in dataset
 ]
 
-torch.save(processed_data, "preprocessed_api_to_curl.pt")
+torch.save(processed_data, "data/input/preprocessed_api_to_curl.pt")
 print("Preprocessing Complete ✅")

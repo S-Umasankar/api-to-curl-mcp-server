@@ -8,7 +8,7 @@ tokenizer = T5Tokenizer.from_pretrained(model_path)
 model = T5ForConditionalGeneration.from_pretrained(model_path)
 
 # Load dataset
-dataset = torch.load("data/preprocessed_api_to_curl.pt")
+dataset = torch.load("data/input/preprocessed_api_to_curl.pt")
 
 # Evaluate model
 references, predictions = [], []

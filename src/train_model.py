@@ -4,13 +4,13 @@ from transformers import T5ForConditionalGeneration, T5Tokenizer, AdamW
 tokenizer = T5Tokenizer.from_pretrained("t5-small")
 model = T5ForConditionalGeneration.from_pretrained("t5-small")
 
-dataset = torch.load("data/preprocessed_api_to_curl.pt")
+dataset = torch.load("data/input/preprocessed_api_to_curl.pt")
 train_loader = torch.utils.data.DataLoader(dataset, batch_size=8, shuffle=True)
 
 optimizer = AdamW(model.parameters(), lr=5e-5)
 
 # Training Loop
-for epoch in range(3):
+for epoch in range(5):
     total_loss = 0
     for batch in train_loader:
         input_ids, labels = batch["input_ids"], batch["labels"]

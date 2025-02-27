@@ -16,5 +16,5 @@ def generate_api_sample(sample_id):
 
 
 dataset = [generate_api_sample(i) for i in range(1, 501)]
-json.dump(dataset, open("api_to_curl_dataset.json", "w"), indent=4)
+json.dump(dataset, open("data/input/api_to_curl_dataset.json", "w"), indent=4)
 print("Dataset Generated ✅")

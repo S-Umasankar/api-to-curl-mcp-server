@@ -3,21 +3,41 @@ import requests
 import subprocess
 from git import Repo
 
-# MCP Server URL
 MCP_SERVER_URL = "http://127.0.0.1:8000"
+
+def is_mcp_server_running():
+    """Check if the MCP server is running."""
+    try:
+        response = requests.get(f"{MCP_SERVER_URL}/docs")
+        return response.status_code == 200
+    except requests.exceptions.RequestException:
+        return False
+
+def start_mcp_server():
+    """Start the MCP server if it is not running."""
+    if not is_mcp_server_running():
+        print("🚀 Starting MCP Server...")
+        subprocess.Popen(["uvicorn", "src.mcp_server:app", "--reload"])
+        time.sleep(5)  # Wait for server to start
+
+# Ensure the server is running before API calls
+start_mcp_server()
 
 # GitHub Repo Info
 GITHUB_REPO_PATH = "/Users/umasankars/PycharmProjects/CapstoneMCPserver/"
 GITHUB_REMOTE_URL = "https://github.com/S-Umasankar/api-to-curl-mcp-server.git"
 
 
-def call_api(endpoint):
-    """Helper function to call MCP server API endpoints."""
-    try:
-        response = requests.get(f"{MCP_SERVER_URL}{endpoint}")
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        return {"error": str(e)}
+def call_api(endpoint, retries=5, delay=10):
+    """Helper function to call MCP server API endpoints with retries."""
+    for attempt in range(retries):
+        try:
+            response = requests.get(f"{MCP_SERVER_URL}{endpoint}", timeout=5)
+            return response.json()
+        except requests.exceptions.RequestException as e:
+            print(f"⚠️ API Call Failed (Attempt {attempt + 1}): {e}")
+            time.sleep(delay)  # Wait before retrying
+    return {"error": f"API call failed after {retries} attempts."}
 
 
 def generate_and_test_code():
