@@ -7,5 +7,10 @@ sacrebleu
 requests
 pytest
 gitpython
+rouge-score
+chromadb
+llama-index
+pydantic
+langchain
 
 

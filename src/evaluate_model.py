@@ -1,9 +1,10 @@
 import torch
 import sacrebleu
+from rouge_score import rouge_scorer
 from transformers import T5ForConditionalGeneration, T5Tokenizer
 
 # Load model and tokenizer
-model_path = "models/t5_api_to_curl"
+model_path = "models/t5_api_to_curl_vi"
 tokenizer = T5Tokenizer.from_pretrained(model_path)
 model = T5ForConditionalGeneration.from_pretrained(model_path)
 
@@ -27,3 +28,30 @@ for sample in dataset[:10]:  # Use first 10 samples for testing
 # Calculate BLEU Score
 bleu = sacrebleu.corpus_bleu(predictions, references)
 print(f"🟢 BLEU Score: {bleu.score}")
+
+def compute_rouge(references, hypotheses):
+    scorer = rouge_scorer.RougeScorer(['rouge1', 'rouge2', 'rougeL'], use_stemmer=True)
+    scores = {}
+
+    # Make sure references and hypotheses are lists of strings
+    for reference, hypothesis in zip(references, hypotheses):
+        #print("Inside ROUGE evaluation: ", reference[0], hypothesis)
+        score = scorer.score(reference[0], hypothesis)
+        scores[reference[0]] = score
+
+    return scores
+
+# Compute ROUGE score
+rouge_scores = compute_rouge(references, predictions)
+
+# Print results
+for metric, score in rouge_scores.items():
+    print(f"🟢 Reference: {metric}")
+    print(f"🟢 ROUGE Scores: {score}\n")
+
+## Comments:
+# BLEU
+# Rouge
+
+## Get it full stack
+# Explore Chroma DB

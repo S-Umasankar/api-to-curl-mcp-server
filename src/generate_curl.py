@@ -3,8 +3,8 @@ import sys
 
 def generate_curl(api_text: str):
     # Load model & tokenizer
-    model = T5ForConditionalGeneration.from_pretrained("models/t5_api_to_curl").to("cpu")
-    tokenizer = T5Tokenizer.from_pretrained("models/t5_api_to_curl")
+    model = T5ForConditionalGeneration.from_pretrained("models/t5_api_to_curl_v1").to("cpu")
+    tokenizer = T5Tokenizer.from_pretrained("models/t5_api_to_curl_v1")
 
     if model is None or tokenizer is None:
         return {"error": "Model not loaded"}

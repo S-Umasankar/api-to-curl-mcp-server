@@ -10,7 +10,7 @@ logging.basicConfig(filename="logs/ai_logs.log", level=logging.INFO)
 app = FastAPI()
 
 # Load Model & Tokenizer (If already trained)
-model_path = "models/t5_api_to_curl"
+model_path = "models/t5_api_to_curl_v1"
 try:
     model = T5ForConditionalGeneration.from_pretrained(model_path)
     tokenizer = T5Tokenizer.from_pretrained(model_path)
@@ -18,13 +18,11 @@ except:
     model = None
     tokenizer = None
 
-
 # Endpoint to generate dataset
 @app.get("/generate_dataset/")
 async def generate_dataset():
     subprocess.run(["python", "src/generate_dataset.py"])
     return {"status": "Dataset Generated"}
-
 
 # Endpoint to preprocess dataset
 @app.get("/preprocess_data/")
@@ -32,11 +30,30 @@ async def preprocess_data():
     subprocess.run(["python", "src/preprocess_data.py"])
     return {"status": "Dataset Preprocessed"}
 
-
 # Endpoint to train model
 @app.get("/train_model/")
 async def train_model():
     subprocess.run(["python", "src/train_model.py"])
+    return {"status": "Model Training Started"}
+
+# Endpoint to setup RAG workflow
+@app.get("/setup_rag/")
+async def setup_rag():
+    subprocess.run(["python", "src/vector_db.py"])
+    subprocess.run(["python", "src/rag_preprocessv2.py"])
+    subprocess.run(["python", "src/rag_retrieval.py"])
+    return {"status": "Vector DB run Started"}
+
+# Endpoint to execute RAG retrieval
+@app.get("/rag_retrieval/")
+async def rag_retrieval():
+    subprocess.run(["python", "src/train_model.py"])
+    return {"status": "Model Training Started"}
+
+# Evaluate to train model
+@app.get("/evaluate_model/")
+async def train_model():
+    subprocess.run(["python", "src/evaluate_model.py"])
     return {"status": "Model Training Started"}
 
 # Testing the model
