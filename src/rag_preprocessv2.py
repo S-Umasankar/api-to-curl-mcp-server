@@ -1,5 +1,8 @@
 import vector_db
 import chromadb
+from transformers import T5ForConditionalGeneration
+import torch
+from transformers import T5Tokenizer
 
 # Initialize ChromaDB Client
 client = chromadb.PersistentClient(path="./chroma_db")
@@ -9,6 +12,11 @@ collection = client.get_or_create_collection(name="api_doc")
 
 # Retrieve Data from ChromaDB
 results = collection.get(include=["embeddings", "metadatas"])
+
+# Load model and tokenizer
+model_path = "models/t5_api_to_curl_v1"
+tokenizer = T5Tokenizer.from_pretrained(model_path)
+model = T5ForConditionalGeneration.from_pretrained(model_path)
 
 # Extract Text and Process with T5
 processed_texts = []
