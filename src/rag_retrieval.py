@@ -1,40 +1,54 @@
-from transformers import T5ForConditionalGeneration
+import sys
+
+from fastapi import FastAPI
+from transformers import T5ForConditionalGeneration, T5Tokenizer
 import torch
-from transformers import T5Tokenizer
 import chromadb
 
-# Load model and tokenizer
+# Initialize FastAPI
+app = FastAPI()
+
+# Load Model and Tokenizer
 model_path = "models/t5_api_to_curl_v1"
 tokenizer = T5Tokenizer.from_pretrained(model_path)
 model = T5ForConditionalGeneration.from_pretrained(model_path)
 
-# Define Query for RAG
-query = "Explain API authentication methods"
-query_inputs = tokenizer(query, return_tensors="pt")
-
-# Convert Query into Embeddings
-with torch.no_grad():
-    query_embedding = model.encoder(**query_inputs).last_hidden_state.mean(dim=1).squeeze().tolist()
-
 # Initialize ChromaDB Client
 client = chromadb.PersistentClient(path="./chroma_db")
-
-# Get a collection in ChromaDB
 collection = client.get_or_create_collection(name="api_doc")
 
-# Retrieve Top 3 Relevant Documents
-results = collection.query(query_embeddings=[query_embedding], n_results=3)
+# API Endpoint to Handle Queries
+def process_query(query: str):
+    # Convert Query into Embeddings
+    query_inputs = tokenizer(query, return_tensors="pt")
+    with torch.no_grad():
+        query_embedding = model.encoder(**query_inputs).last_hidden_state.mean(dim=1).squeeze().tolist()
 
-# Extract Relevant Texts
-retrieved_texts = [entry["text"] for entry in results["metadatas"]]
+    # Retrieve Top 3 Relevant Documents from ChromaDB
+    results = collection.query(query_embeddings=[query_embedding], n_results=3)
+    print("Retrieved data from chroma: ", results)
 
-# Generate Response Using T5 Model
-context = " ".join(retrieved_texts)
-input_text = f"question: {query} context: {context}"
-input_ids = tokenizer(input_text, return_tensors="pt").input_ids
+    # Extract Relevant Texts
+    retrieved_texts = [f'{entry["api_documentation"]} || {entry["curl_command"]}' for entry in results["metadatas"][0]]
 
-# Generate Answer
-output_ids = model.generate(input_ids)
-answer = tokenizer.decode(output_ids[0], skip_special_tokens=True)
+    # Generate Response Using T5 Model
+    context = " ".join(retrieved_texts)
+    input_text = f"Given the following API documentation, generate the correct cURL command:\n{context}\nQuery: {query}\nResponse:"
+    input_ids = tokenizer(input_text, return_tensors="pt").input_ids
+    print("Input IDs: ", input_ids)
 
-print("Generated Response:", answer)
+    # Generate Answer
+    output_ids = model.generate(input_ids)
+    print("Output IDs: ", output_ids)
+    answer = tokenizer.decode(output_ids[0], skip_special_tokens=True)
+    print("Answer: ", answer)
+
+    return answer
+
+# Run: uvicorn src.deploy_model:app --reload
+# Get API text from CLI argument
+if __name__ == "__main__":
+    query = sys.argv[1]  # Read from command-line argument
+    generated_curl = process_query(query)
+    print(generated_curl)  # Print output so FastAPI can capture it
+

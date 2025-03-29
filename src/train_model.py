@@ -1,5 +1,6 @@
 import torch
-from transformers import T5ForConditionalGeneration, T5Tokenizer, AdamW
+from torch.optim import AdamW
+from transformers import T5ForConditionalGeneration, T5Tokenizer
 
 tokenizer = T5Tokenizer.from_pretrained("t5-small")
 model = T5ForConditionalGeneration.from_pretrained("t5-small")

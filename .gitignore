@@ -4,3 +4,4 @@
 /models/
 .idea/
 /src/__pycache__/
+/chroma_db/

@@ -18,19 +18,21 @@ with open("data/input/api_to_curl_dataset.json", "r") as f:
     json_data = json.load(f)
 
 # Store JSON data in ChromaDB
-for i, entry in enumerate(json_data):
-    text = entry["text"]  # Assuming "text" key has relevant data
+for entry in json_data:
+    api_doc = entry["api_documentation"]
+    curl_cmd = entry["curl_command"]
+    combined_text = f"{api_doc} || {curl_cmd}"  # Concatenating both fields
 
     # Convert to Embeddings
-    inputs = tokenizer(text, return_tensors="pt")
+    inputs = tokenizer(combined_text, return_tensors="pt")
     with torch.no_grad():
         embeddings = model.encoder(**inputs).last_hidden_state.mean(dim=1).squeeze().tolist()
 
     # Store in ChromaDB
     collection.add(
-        ids=[str(i)],
+        ids=[str(entry["id"])],  # Using the provided ID
         embeddings=[embeddings],
-        metadatas=[entry]  # Store full JSON entry as metadata
+        metadatas=[{"api_documentation": api_doc, "curl_command": curl_cmd}]  # Store API & cURL
     )
 
 print("JSON data stored in ChromaDB successfully ✅")

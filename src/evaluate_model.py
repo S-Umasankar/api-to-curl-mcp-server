@@ -48,10 +48,3 @@ rouge_scores = compute_rouge(references, predictions)
 for metric, score in rouge_scores.items():
     print(f"🟢 Reference: {metric}")
     print(f"🟢 ROUGE Scores: {score}\n")
-
-## Comments:
-# BLEU
-# Rouge
-
-## Get it full stack
-# Explore Chroma DB

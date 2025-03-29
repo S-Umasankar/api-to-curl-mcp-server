@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 import subprocess
 import logging
-import torch
 from transformers import T5ForConditionalGeneration, T5Tokenizer
 
 # Configure logging
@@ -40,15 +39,14 @@ async def train_model():
 @app.get("/setup_rag/")
 async def setup_rag():
     subprocess.run(["python", "src/vector_db.py"])
-    subprocess.run(["python", "src/rag_preprocessv2.py"])
-    subprocess.run(["python", "src/rag_retrieval.py"])
-    return {"status": "Vector DB run Started"}
+    return {"status": "Vector DB run completed"}
 
 # Endpoint to execute RAG retrieval
-@app.get("/rag_retrieval/")
-async def rag_retrieval():
-    subprocess.run(["python", "src/train_model.py"])
-    return {"status": "Model Training Started"}
+@app.post("/rag_retrieval")
+async def rag_retrieval(query: str):
+    result = subprocess.run(
+        ["python", "src/rag_retrieval.py", query])
+    return {"RAG output": result}  # Return generated cURL
 
 # Evaluate to train model
 @app.get("/evaluate_model/")
