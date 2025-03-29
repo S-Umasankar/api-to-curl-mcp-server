@@ -4,7 +4,7 @@ from rouge_score import rouge_scorer
 from transformers import T5ForConditionalGeneration, T5Tokenizer
 
 # Load model and tokenizer
-model_path = "models/t5_api_to_curl_vi"
+model_path = "models/t5_api_to_curl_v1"
 tokenizer = T5Tokenizer.from_pretrained(model_path)
 model = T5ForConditionalGeneration.from_pretrained(model_path)
 
