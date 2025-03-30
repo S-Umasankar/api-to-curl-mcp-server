@@ -33,7 +33,7 @@ def process_query(query: str):
 
     # Generate Response Using T5 Model
     context = " ".join(retrieved_texts)
-    input_text = f"Given the following API documentation, generate the correct cURL command:\n{context}\nQuery: {query}\nResponse:"
+    input_text = f"Given the following API documentation examples\n{context}, \ngenerate the correct cURL command for this query:\nQuery: {query}\n"
     input_ids = tokenizer(input_text, return_tensors="pt").input_ids
     print("Input IDs: ", input_ids)
 

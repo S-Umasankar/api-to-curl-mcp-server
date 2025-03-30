@@ -1,5 +1,6 @@
 import torch
-from transformers import T5ForConditionalGeneration, T5Tokenizer, AdamW
+from transformers import T5ForConditionalGeneration, T5Tokenizer
+from torch.optim import AdamW
 
 # Load model and tokenizer
 model_path = "models/t5_api_to_curl"

@@ -35,7 +35,6 @@ def compute_rouge(references, hypotheses):
 
     # Make sure references and hypotheses are lists of strings
     for reference, hypothesis in zip(references, hypotheses):
-        #print("Inside ROUGE evaluation: ", reference[0], hypothesis)
         score = scorer.score(reference[0], hypothesis)
         scores[reference[0]] = score
 
